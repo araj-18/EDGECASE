@@ -1,0 +1,8 @@
+{
+  "name": "ACCESSAI",
+  "description": "Make Every Document Accessible. Transform complex documents into clear, understandable, and accessible formats using AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
