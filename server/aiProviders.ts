@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
-import { DocumentAnalysisResult } from '../src/types/index';
+import type { DocumentAnalysisResult } from '../src/types/index.ts';
 
 export interface AIProvider {
   name: string;
@@ -870,16 +870,27 @@ export class DemoProvider implements AIProvider {
     text: string,
     metadata: { filename: string; fileType: string; ocrUsed: boolean; pageCount: number }
   ): Promise<DocumentAnalysisResult> {
-    // If the user uploaded a custom document or text, analyze their actual text dynamically
-    if (text && text.trim().length > 15 && !metadata.filename.toLowerCase().includes('apex')) {
-      return formatPlainTextAsAccessibleResult(
-        text,
-        metadata,
-        'ACCESSAI Cognitive Engine (Demo Mode)',
-        'demo-deterministic-v1'
-      );
+    // Only return the static Apex admission sample if the document is specifically the built-in Apex sample
+    const isExplicitApexSample =
+      metadata.filename &&
+      metadata.filename.toLowerCase().includes('apex_university_admission');
+
+    if (isExplicitApexSample && (!text || text.trim().length < 50)) {
+      return getDemoAdmissionDocument(metadata.filename);
     }
-    return getDemoAdmissionDocument(metadata.filename);
+
+    // Dynamic processing of the user's uploaded document
+    const docText =
+      text && text.trim().length > 0
+        ? text
+        : `Document: ${metadata.filename}\nType: ${metadata.fileType}\nPages: ${metadata.pageCount}\nAccessible structure generated for uploaded document.`;
+
+    return formatPlainTextAsAccessibleResult(
+      docText,
+      metadata,
+      'ACCESSAI Cognitive Engine',
+      'demo-deterministic-v1'
+    );
   }
 }
 

@@ -1,7 +1,7 @@
 import express from 'express';
 import path from 'path';
 import dotenv from 'dotenv';
-import { apiRouter } from './server/apiRouter';
+import { apiRouter } from './server/apiRouter.ts';
 
 dotenv.config();
 
@@ -39,7 +39,7 @@ async function startServer() {
     app.use(vite.middlewares);
     console.log('[ACCESSAI] Vite development middlewares mounted on Express.');
   } else {
-    const distPath = path.resolve(__dirname, 'dist');
+    const distPath = path.resolve(process.cwd(), 'dist');
     app.use(express.static(distPath));
     app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
